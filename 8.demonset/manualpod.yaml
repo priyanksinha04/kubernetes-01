@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-manual
+  labels:
+    env: dev
+    type: demo
+    name: nginx-pod
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx123:latest
+      ports:
+        - containerPort: 80
+  nodeName: cka-cluster3-worker
+
+  # It will not schedule by kubernetes schedular
+  #It is manual schedular because we have mention spec.nodeName

@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-deployment
+  labels:
+    app: my-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: main-app
+          image: nginx:latest  # Example application: Nginx web server
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+            - name: shared-log-volume
+              mountPath: /var/log/nginx  # Mount path for Nginx logs
+        - name: log-collector
+          image: fluent/fluentd:v1.19  # Example sidecar: Fluentd for log collection
+          volumeMounts:
+            - name: shared-log-volume
+              mountPath: /var/log/nginx  # Mount path to access shared logs
+            - name: fluentd-config
+              mountPath: /etc/fluent/conf.d/  # Mount path for Fluentd config
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+      volumes:
+        - name: shared-log-volume
+          emptyDir: {}  # Shared volume for logs (using emptyDir for simplicity)
+        - name: fluentd-config
+          configMap:
+            name: fluentd-config  # ConfigMap containing Fluentd configuration
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-config
+data:
+  fluentd.conf: |
+    <source>
+      @type tail
+      path /var/log/nginx/access.log
+      pos_file /var/log/nginx/access.log.pos
+      tag nginx.access
+      format combined
+    </source>
+    <match nginx.access>
+      @type stdout
+    </match>
