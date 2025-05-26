@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod-request
+spec:
+  containers:
+    - name: nginx
+      image: nginx:latest
+      resources:
+        requests:
+          cpu: "50m"  # Requesting 0.05 CPU core
+          memory: "2Mi" # Requesting 2 MiB of memory
