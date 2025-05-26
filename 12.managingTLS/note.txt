@@ -1,0 +1,2 @@
+cat adam.csr | base64 | tr -d "\n"
+kubectl get csr adam -o yaml > issuecert.yaml

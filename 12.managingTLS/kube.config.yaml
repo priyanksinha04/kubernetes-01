@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: config
+
+# Array of cluster , we can specify multiple cluster in one file
+clusters:
+  - cluster:
+      name: development
+  - cluster:
+      name: test
+
+# these are different user that have permission to do certain
+# task certain actions on the server
+users:
+  - name: developer
+  - name:  experimenter
+
+# we have contexts , we being using 'use context' , 'set context'
+# command till now right so this is where the context are specified
+# Context are nothing but the combination of user and cluster
+# e.g. : let say we need to create a context through which developer can access the
+#        development cluster , so for that we have created a context a called dev-frontend
+contexts:
+  - context:
+      cluster:
+      user:
+    name: dev-frontend
+  - context:
+      cluster:
+      user:
+    name: dev-storage
+  - context:
+      cluster: test
+      user: experimenter
+    name: exp-test

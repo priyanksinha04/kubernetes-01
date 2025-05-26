@@ -1,0 +1,27 @@
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: adam # A unique name for your CSR within Kubernetes
+spec:
+  # The base64-encoded PEM-encoded CSR generated in Step 1.
+  # Replace <YOUR_BASE64_ENCODED_CSR_HERE> with the actual output.
+  request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0NCk1JSUNSVENDQVMwQ0FRQXdBRENDQVNJd0RRWUpLb1pJaHZjTkFRRUJCUUFEZ2dFUEFEQ0NBUW9DZ2dFQkFNSVcNCnlDeElUenk4MkRkTWRlOGROWU95bFJad08xdjlrR1dVaTRHMjhxN3BWZVhBWjZsbDlGL2I4TmQvaHVPc2V4RjINCjhBdktTQmMxeFo1VUxJMkl3Q3pTMkt6UVdxZThnNHBWZWFCMmUyRkM5Qmc5Uzl5M0UvSElnazQzY3R5dEJRUHoNCm1PY0lsei8xZitYNCs1aFhxY2dWbFVMMS93dUVoZHdpTVdjT0ZXYWpEdHZwQVo4V3VsSklBSnhtaDN2SHBqZGYNCm5ZT0xCZG5nSUVMNGFmbkZXd0lPQ1VEVjhQdWd5Nk1ZQ09HdTNEa0Zac3l1OXRESUt1Mjd6bm11ejVEdE9mdFQNCjkyS0NHSmZETXhWYmdxVTNNZ25tcnV0bXVZYSsvWlNqcFYxMmV6eFROVXNsOWUrVlVjbWNtbUk3Ukd3S0tyQVENCjRtelh3a1VET0tQZGhNWUVVTk1DQXdFQUFhQUFNQTBHQ1NxR1NJYjNEUUVCQ3dVQUE0SUJBUUFpYmlzQ1pWNHMNCjBscGk4TXpadldvdTJHb3QrTnM1aStZVTFEMlVpdjNlRHN1N0hMcFpTYkdJemJVMGQwOEEwOVJwdTBVeFFEQlMNClZkMDMrV3RmeUlnTFN3RFR1MzI0Z0Q0Y05SUUFKcEhKNVh2Z1BaM3ZDcFhScDdKZlB4SVl6TjZyTElIcnBIOE0NCnhzdncydWdvYTJhTDllMW40cjVldVpJNG5TQ0t0SElUTXJPVk5tWGR6MXVLcGkrY3hxeFU1NC9kSDZ1dG8xWnENCkFGMXlPdG92bFVxaE5KcThFbjlRSmZSSXgrakNJSXVJMkxWT3V3L1k1WlZGYWZzZzlaNGJ1cGs3NVJYYW05aVINCkhmYnZ3QmhNNGl3Vk94bCtqdUdLbTJsejF4eWtJSm9aWktnTFFDMVZyOXY3UEEvQTVkTDJNeG51SHAxczhZd0YNClE4ZTd5dGdBcGRLbg0KLS0tLS1FTkQgQ0VSVElGSUNBVEUgUkVRVUVTVC0tLS0tDQo=
+  # Specifies which signer should sign the certificate.
+  # Common signers include:
+  # - kubernetes.io/kube-apiserver-client: For client authentication to the API server.
+  # - kubernetes.io/kubelet-serving: For Kubelet serving certificates.
+  # - A custom signer name (e.g., "example.com/custom-ca") if you have a custom cert-manager Issuer/ClusterIssuer
+  #   or an external CA integration that uses a specific signer name.
+  signerName: kubernetes.io/kube-apiserver-client # Adjust based on your needs
+  # Defines the intended usages of the certificate.
+  # Common usages include:
+  # - digital signature
+  # - key encipherment
+  # - server auth (for server certificates)
+  # - client auth (for client certificates)
+  # - signing (for CA certificates)
+  usages:
+    #- digital signature
+    #- key encipherment
+    #- server auth # Include if this certificate is for a server
+    - client auth # Include if this certificate is for a client

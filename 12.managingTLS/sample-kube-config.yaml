@@ -1,0 +1,42 @@
+# apiVersion: The version of the kubeconfig API.
+apiVersion: v1
+# clusters: A list of clusters that you can connect to.
+clusters:
+  - cluster:
+      # certificate-authority-data: Base64 encoded CA certificate for the cluster.
+      # Alternatively, you can use 'certificate-authority' to point to a file path.
+      certificate-authority-data: <BASE64_ENCODED_CA_CERTIFICATE>
+      # server: The URL of the Kubernetes API server.
+      server: https://kubernetes.example.com:6443 # Replace with your cluster's API server URL
+    name: my-kubernetes-cluster # A friendly name for this cluster
+# contexts: A list of contexts, which combine a cluster, a user, and a namespace.
+contexts:
+  - context:
+      cluster: my-kubernetes-cluster # Refers to the cluster defined above
+      user: admin-user             # Refers to the user defined below
+      namespace: default           # Optional: The default namespace for this context
+    name: my-kubernetes-cluster-context # A friendly name for this context
+# current-context: The name of the context that is currently active.
+current-context: my-kubernetes-cluster-context
+# kind: The type of the kubeconfig object.
+kind: Config
+# users: A list of users that can authenticate to the clusters.
+users:
+  - name: admin-user # A friendly name for this user
+    user:
+      # client-certificate-data: Base64 encoded client certificate for authentication.
+      # Alternatively, you can use 'client-certificate' to point to a file path.
+      client-certificate-data: <BASE64_ENCODED_CLIENT_CERTIFICATE>
+      # client-key-data: Base64 encoded client private key for authentication.
+      # Alternatively, you can use 'client-key' to point to a file path.
+      client-key-data: <BASE64_ENCODED_CLIENT_KEY>
+      # token: Optional: An authentication token (e.g., service account token, OIDC token).
+      # token: <YOUR_AUTH_TOKEN>
+      # auth-provider: Optional: Configuration for an external authentication provider (e.g., OIDC).
+      # auth-provider:
+      #   name: oidc
+      #   config:
+      #     client-id: "your-oidc-client-id"
+      #     client-secret: "your-oidc-client-secret"
+      #     id-token: "your-oidc-id-token"
+      #     idp-issuer-url: "https://your-oidc-provider.com"
