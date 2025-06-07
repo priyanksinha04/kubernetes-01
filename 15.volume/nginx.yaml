@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx
+      volumeMounts:
+        - name: nginx-storage
+          mountPath: /data/nginx
+  volumes:
+  - name: nginx-storage
+    persistentVolumeClaim:
+      claimName: my-pvc
+  nodeName: cka-new-worker
+
+  ## This is not for multinode cluster because how we will find
+  ## it is of which node so as of now we are mentioning nodeName we can also
+  ## use taint and torrelance and node selector we have to make sure that it select one node only
