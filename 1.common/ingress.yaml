@@ -1,0 +1,83 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-app-ingress # Name of the Ingress resource
+  namespace: default # Namespace where your services and pods reside
+  annotations:
+    # --- IMPORTANT ANNOTATIONS ---
+    # These annotations depend on the Ingress Controller you are using.
+    # Common Ingress Controllers include Nginx Ingress Controller, Traefik, GCE Ingress, etc.
+    # The annotations below are common for the Nginx Ingress Controller.
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    # This annotation rewrites the path from the ingress rule to the service target.
+    # For example, if the path is /api/(.*), the rewrite-target will remove /api/
+    # so the backend service only receives /path-after-api.
+
+    # Optional: Enable client-max-body-size for larger uploads (Nginx Ingress specific)
+    # nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+
+    # Optional: Enable SSL redirect (Nginx Ingress specific)
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+
+    # Optional: Enable CORS (Nginx Ingress specific)
+    # nginx.ingress.kubernetes.io/enable-cors: "true"
+    # nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    # nginx.ingress.kubernetes.io/cors-allow-methods: "GET, PUT, POST, DELETE, OPTIONS"
+
+spec:
+  # IngressClassName specifies which Ingress Controller should handle this Ingress.
+  # This field became mandatory in Kubernetes 1.19+ (networking.k8s.io/v1 API).
+  # Make sure this matches the IngressClass resource name you have configured in your cluster.
+  # Example: If you installed Nginx Ingress Controller, it might create an IngressClass named 'nginx'.
+  ingressClassName: nginx
+
+  # TLS configuration for HTTPS.
+  # This section is optional. If omitted, traffic will be HTTP unless a default
+  # IngressClass or Controller provides SSL termination.
+  tls:
+    - hosts:
+        - myapp.example.com # Replace with your actual domain
+      secretName: my-app-tls-secret # Kubernetes Secret containing TLS certificate and key
+
+  # Rules define how traffic is routed.
+  rules:
+    # Rule 1: Host-based routing for a specific domain
+    - host: myapp.example.com # Your domain name
+      http:
+        paths:
+          # Path 1.1: Root path for the main application
+          - path: /
+            pathType: Prefix # Matches paths starting with /
+            backend:
+              service:
+                name: frontend-service # Name of your Kubernetes Service
+                port:
+                  number: 80 # Port exposed by the frontend-service
+
+          # Path 1.2: Path for API services
+          - path: /api/(.*) # Matches paths starting with /api/
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-service # Name of your backend Kubernetes Service
+                port:
+                  number: 8080 # Port exposed by the backend-service
+
+    # Rule 2 (Optional): Another host or a default backend
+    # - host: admin.example.com
+    #   http:
+    #     paths:
+    #       - path: /
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: admin-dashboard-service
+    #             port:
+    #               number: 80
+
+  # Default backend (optional but recommended for catching all other traffic)
+  # If no rules match, traffic will be routed to this default backend.
+  # If you don't define this, and no rule matches, some Ingress Controllers might return 404.
+  # defaultBackend:
+  #   service:
+  #     name: default-http-backend # A common default backend service (often part of Ingress Controller se
